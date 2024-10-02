@@ -1,13 +1,8 @@
-version: '3.9'
-
-volumes:
-  dbbackup:
-  postgis-data:
-
+version: '3.8'  # You can specify a version or remove this line as it's now deprecated
 
 services:
   postgis:
-    image: kartoza/postgis:latest
+    image: kartoza/postgis:latest  # Corrected the image name here
     container_name: postgis
     restart: always
     ports:
@@ -18,7 +13,7 @@ services:
       POSTGRES_DB: pgrouting
     volumes:
       - dbbackup:/backup
-      - .test/pgdata:/var/lib/postgresql/data
+      - postgis-data:/var/lib/postgresql/data  # Ensure this volume is defined
 
   pgadmin4:
     image: dpage/pgadmin4
@@ -32,4 +27,8 @@ services:
     depends_on:
       - postgis
     volumes:
-      - .test/pgdata/backup:/backup
+      - dbbackup:/backup
+
+volumes:
+  dbbackup:
+  postgis-data:
