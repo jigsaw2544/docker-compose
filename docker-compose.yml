@@ -1,0 +1,35 @@
+version: '3.9'
+
+volumes:
+  dbbackup:
+  postgis-data:
+
+
+services:
+  postgis:
+    image: kartoza/postgis:latest
+    container_name: postgis
+    restart: always
+    ports:
+      - '25432:5432'
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: pgrouting
+    volumes:
+      - dbbackup:/backup
+      - .test/pgdata:/var/lib/postgresql/data
+
+  pgadmin4:
+    image: dpage/pgadmin4
+    container_name: pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@domain.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - '5050:80'
+    depends_on:
+      - postgis
+    volumes:
+      - .test/pgdata/backup:/backup
